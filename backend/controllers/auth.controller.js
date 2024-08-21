@@ -4,7 +4,7 @@ import generateTokenAndSendCookie from "../utils/generateTokenAndSendCookie.js";
 import { sendVerificationEmail, sendWelcomeEmail } from "../mailtrap/emails.js";
 
 export const signUp = async (req, res) => {
-  // take data
+  // get data
   const { name, email, password } = req.body;
   try {
     // check if all data are entered
@@ -79,5 +79,6 @@ export const signIn = async (req, res) => {
 };
 
 export const logOut = async (req, res) => {
-  res.send("LogOut route");
+  res.clearCookie("token");
+  res.status(200).json({ success: true, message: "logged out successfully" });
 };
