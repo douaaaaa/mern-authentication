@@ -15,6 +15,28 @@ export const sendVerificationEmail = async (email, verificationToken) => {
       category: "email verification",
     });
   } catch (error) {
-    throw new Error(`Mailtrap: ${error}`);
+    throw new Error(`Mailtrap, verify token: ${error}`);
+  }
+};
+
+export const sendWelcomeEmail = async (email, name) => {
+  const recipient = [{ email }];
+  try {
+    const response = await mailtrapClient.send({
+      from: sender,
+      to: recipient,
+      template_uuid: "a2708953-1edc-4bad-936e-1bbf58174992",
+      template_variables: {
+        company_info_name: "Doua's Company",
+        name: name,
+        company_info_address: "Algeria",
+        company_info_city: "Skikda",
+        company_info_zip_code: "21001",
+        company_info_country: "Skikda",
+      },
+    });
+  } catch (error) {
+    console.log("sending welcome email ", error);
+    throw new Error(`Mailtrap, welcome email: ${error}`);
   }
 };
