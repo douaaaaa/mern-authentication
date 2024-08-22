@@ -5,6 +5,7 @@ import {
   sendVerificationEmail,
   sendWelcomeEmail,
   resetPasswordEmail,
+  resetPasswordSuccessEmail,
 } from "../mailtrap/emails.js";
 import crypto from "crypto";
 
@@ -139,5 +140,34 @@ export const forgetPassword = async (req, res) => {
       .json({ success: true, message: "reset email was send successfully" });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
+  }
+};
+
+export const resetPassword = async (req, res) => {
+  try {
+    const { token } = req.params;
+    const { password } = req.body;
+    const user = await User.findOne({
+      resetPasswordToken: token,
+      resetPasswordTokenExpiresAt: { $gt: Date.now() },
+    });
+    if (!user) {
+      res.status(400).json({
+        success: false,
+        message: "invalid or expired reset token",
+      });
+    }
+    const hashedPassword = await bcryptjs.hash(password, 10);
+    user.password = hashedPassword;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordTokenExpiresAt = undefined;
+    await user.save();
+    await resetPasswordSuccessEmail(user.email);
+    res.status(200).json({
+      success: true,
+      message: "password reset successfully",
+    });
+  } catch (error) {
+    res.status(404).json({ success: false, message: error.message });
   }
 };
