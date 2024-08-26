@@ -4,16 +4,26 @@ import Input from "../components/Input";
 import { FaRegUser } from "react-icons/fa";
 import { MdOutlineEmail } from "react-icons/md";
 import { RiLockPasswordLine } from "react-icons/ri";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import PasswordMeter from "../components/PasswordMeter";
+import { useAuthStore } from "../store/authStore";
+import { AiOutlineLoading } from "react-icons/ai";
 
 function SignUpPage() {
-  const handleSubmit = (e) => {
-    e.preventDefault();
-  };
   const [Name, setName] = useState("");
   const [Email, setEmail] = useState("");
   const [Password, setPassword] = useState("");
+  const { signup, error, isLoading } = useAuthStore();
+  const navigate = useNavigate();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await signup(Name, Email, Password);
+      navigate("/verify-email");
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -47,13 +57,23 @@ function SignUpPage() {
             value={Password}
             onChange={(e) => setPassword(e.target.value)}
           />
+          {error && (
+            <p className=" text-sm text-red-500 font-bold capitalize">
+              {error}
+            </p>
+          )}
           <motion.button
             className=" mt-5 w-full py-3 px-4 bg-gradient-to-r from-green-500 to-emerald-600  text-white font-bold rounded-lg shadow-lg hover:from-green-600 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-gray-900 transition duration-200"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             type="submit"
+            disabled={isLoading}
           >
-            Sign Up
+            {isLoading ? (
+              <AiOutlineLoading className=" animate-spin mx-auto size-4" />
+            ) : (
+              "Verify"
+            )}
           </motion.button>
         </form>
         <PasswordMeter password={Password} />
