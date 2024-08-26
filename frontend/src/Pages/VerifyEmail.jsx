@@ -9,7 +9,7 @@ function VerifyEmail() {
   const [Code, setCode] = useState(["", "", "", "", "", ""]);
   const inputRefs = useRef([]);
   const navigate = useNavigate();
-  const { isLoading, verifyEmail, error, user } = useAuthStore();
+  const { isLoading, verifyEmail, error } = useAuthStore();
   const handleChange = (index, eValue) => {
     const newCode = [...Code];
 
