@@ -3,15 +3,23 @@ import { motion } from "framer-motion";
 import Input from "../components/Input";
 import { MdOutlineEmail } from "react-icons/md";
 import { RiLockPasswordLine } from "react-icons/ri";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AiOutlineLoading } from "react-icons/ai";
+import { useAuthStore } from "../store/authStore";
 
 function LoginPage() {
   const [Email, setEmail] = useState("");
   const [Password, setPassword] = useState("");
-  const isLoading = false;
-  const handleSubmit = (e) => {
+  const { isLoading, error, login } = useAuthStore();
+  const navigate = useNavigate();
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    try {
+      await login(Email, Password);
+      // navigate("/");
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <motion.div
@@ -47,6 +55,11 @@ function LoginPage() {
               Forget Passowrd ?
             </Link>
           </div>
+          {error && (
+            <p className=" text-red-500 font-semibold mb-2 capitalize">
+              {error}
+            </p>
+          )}
           <motion.button
             className=" mt-5 w-full py-3 px-4 bg-gradient-to-r from-green-500 to-emerald-600  text-white font-bold rounded-lg shadow-lg hover:from-green-600 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-gray-900 transition duration-200"
             whileHover={{ scale: 1.02 }}
