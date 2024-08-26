@@ -2,13 +2,14 @@ import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { AiOutlineLoading } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "../store/authStore.js";
+import toast from "react-hot-toast";
 
 function VerifyEmail() {
-  const isLoading = false;
   const [Code, setCode] = useState(["", "", "", "", "", ""]);
   const inputRefs = useRef([]);
   const navigate = useNavigate();
-
+  const { isLoading, verifyEmail, error, user } = useAuthStore();
   const handleChange = (index, eValue) => {
     const newCode = [...Code];
 
@@ -36,9 +37,16 @@ function VerifyEmail() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(`you've submited ${Code.join("")}`);
+    const verificationCode = Code.join("");
+    try {
+      await verifyEmail(verificationCode);
+      navigate("/");
+      toast.success("email verified successfully");
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   useEffect(() => {
@@ -75,6 +83,7 @@ function VerifyEmail() {
               />
             ))}
           </div>
+          {error && <p className=" text-sm font-bold text-red-500">{error}</p>}
           <motion.button
             className=" mt-5 w-full py-3 px-4 bg-gradient-to-r from-green-500 to-emerald-600  text-white font-bold rounded-lg shadow-lg hover:from-green-600 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-gray-900 transition duration-200"
             whileHover={{ scale: 1.02 }}
