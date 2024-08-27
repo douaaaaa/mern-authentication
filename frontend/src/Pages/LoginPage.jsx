@@ -3,15 +3,14 @@ import { motion } from "framer-motion";
 import Input from "../components/Input";
 import { MdOutlineEmail } from "react-icons/md";
 import { RiLockPasswordLine } from "react-icons/ri";
-import { Link, useNavigate } from "react-router-dom";
 import { AiOutlineLoading } from "react-icons/ai";
+import { Link } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
 
 function LoginPage() {
   const [Email, setEmail] = useState("");
   const [Password, setPassword] = useState("");
   const { isLoading, error, login } = useAuthStore();
-  const navigate = useNavigate();
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {

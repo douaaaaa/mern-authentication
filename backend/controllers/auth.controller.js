@@ -140,7 +140,7 @@ export const forgetPassword = async (req, res) => {
     await user.save();
     await resetPasswordEmail(
       user.email,
-      `${process.env.BASE_URL}/reset-password/${resetToken}`
+      `http://localhost:3000/reset-password/${resetToken}`
     );
     res
       .status(200)

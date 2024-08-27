@@ -8,6 +8,8 @@ import { useAuthStore } from "./store/authStore";
 import { useEffect } from "react";
 import DashboardPage from "./Pages/DashboardPage";
 import LoadingSpiner from "./components/LoadingSpiner";
+import ForgetPassword from "./Pages/ForgetPassword";
+import ResetPassword from "./Pages/ResetPassword";
 
 const ProtectedRoute = ({ children }) => {
   const { user, isAuthenticated } = useAuthStore();
@@ -85,6 +87,15 @@ function App() {
           }
         />
         <Route path="/verify-email" element={<VerifyEmail />} />
+        <Route
+          path="/forgot-password"
+          element={
+            <RedirectedAuthenticatedUser>
+              <ForgetPassword />
+            </RedirectedAuthenticatedUser>
+          }
+        />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
       </Routes>
       <Toaster />
     </div>
