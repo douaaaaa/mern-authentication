@@ -90,4 +90,19 @@ export const useAuthStore = create((set) => ({
       });
     }
   },
+  logout: async () => {
+    set({ isLoading: true, error: null });
+    try {
+      await axios.post(`${API_URL}/logout`);
+      set({
+        isLoading: false,
+        isAuthenticated: false,
+        user: null,
+        error: null,
+      });
+    } catch (error) {
+      set({ error: "error loggin out", isLoading: false });
+      throw error;
+    }
+  },
 }));
